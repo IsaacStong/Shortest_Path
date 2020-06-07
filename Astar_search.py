@@ -4,46 +4,62 @@ from Node import Node
 
 
 def Astar_path(maze, start, end):
-    #Node initialization
+    #Node and List Initialization
     start_Node = Node(None, start)
-    start_Node.find_heuristic(end)
-    start_Node.f_value = start_Node.g_value + start_Node.h_value
     end_Node = Node(None, end)
-    #List initialization
-    #Holds Nodes that need to be explored
     open_List = []
-    #Holds solution
     closed_List = []
 
+    #Add starting node to open
     open_List.append(start_Node)
-    current_Node = start_Node
 
-    #While loop keeps track of open_list
-    while open_List is not None:
-        children = current_Node.find_children(maze, end_Node)
-        for i in range(len(children)):
-            tem = children[i].f_value
-            temp = current_Node.f_value
-            if children[i].f_value < current_Node.f_value:
-                open_List.append(children[i])
-        open_List.pop(0)
-        maze[current_Node.position[0]][current_Node.position[1]] = 2
+    #While loop goes until end is found
+    while len(open_List) > 0:
+        #Find next current
         current_Node = open_List[0]
+        current_index = 0
+        for i, node in enumerate(open_List):
+            if node.f_value < current_Node.f_value:
+                current_Node = node
+                current_index = i
 
+        #Remove the current_Node from open and and append to closed
+        open_List.pop(current_index)
+        closed_List.append(current_Node)
+
+        #Test for and return goal
         if current_Node.position == end_Node.position:
-            maze[end_Node.position[0]][end_Node.position[1]] = 2
-            return maze
+            path = []
+            current = current_Node
+            while current is not None:
+                path.append(current.position)
+                current = current.parent
+            return path[::-1]
+
+        #Generate Children
+        children = current_Node.find_children(maze, end_Node)
+        for child in children:
+            #Check if child is in closed
+            for closed_child in closed_List:
+                if child == closed_child:
+                    continue
+            #Check if child is in open
+            for open_node in open_List:
+                if child == open_node and child.g_value > open_node.g_value:
+                    continue
+
+            open_List.append(child)
 
 
-sample_maze = [[0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],]
-solved_sample = Astar_path(sample_maze, (1, 1), (8, 7))
-print((solved_sample))
+sample_maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+answer = Astar_path(sample_maze, (0,0), (7,6))
+print(answer)
