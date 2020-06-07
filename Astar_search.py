@@ -7,7 +7,7 @@ def Astar_path(maze, start, end):
     #Node initialization
     start_Node = Node(None, start)
     start_Node.find_heuristic(end)
-    tem = start_Node.f_value
+    start_Node.f_value = start_Node.g_value + start_Node.h_value
     end_Node = Node(None, end)
     #List initialization
     #Holds Nodes that need to be explored
@@ -22,6 +22,8 @@ def Astar_path(maze, start, end):
     while open_List is not None:
         children = current_Node.find_children(maze, end_Node)
         for i in range(len(children)):
+            tem = children[i].f_value
+            temp = current_Node.f_value
             if children[i].f_value < current_Node.f_value:
                 open_List.append(children[i])
         open_List.pop(0)
@@ -33,12 +35,15 @@ def Astar_path(maze, start, end):
             return maze
 
 
-sample_maze = [[0, 0, 0, 1, 0, 0, 0],
-               [0, 0, 0, 1, 0, 0, 0],
-               [0, 0, 0, 1, 0, 0, 0],
-               [0, 0, 0, 1, 0, 0, 0],
-               [0, 0, 0, 1, 0, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 1, 0, 0, 0],]
-solved_sample = Astar_path(sample_maze, (0, 0), (5, 0))
+sample_maze = [[0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],]
+solved_sample = Astar_path(sample_maze, (1, 1), (8, 7))
 print((solved_sample))
