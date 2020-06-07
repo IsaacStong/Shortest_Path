@@ -1,4 +1,5 @@
-li = [5, 7, 8]
+from Node import Node
+import math
 
-li.pop()
-print(li)
+i = math.sqrt(5**2 + 0**2)
+print(i)
