@@ -3,7 +3,7 @@
     Astar search"""
 import operator
 
-
+#Node class holds nodes for A* search and functions important to A*
 class Node:
 
     def __init__(self, parent=None, position=None):
