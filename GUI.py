@@ -13,6 +13,8 @@ White = (255, 255, 255)
 Black = (0, 0, 0)
 Red = (150, 50, 50)
 blockSize = 14
+start = ()
+goal = ()
 
 #create screen view
 screen = pg.display.set_mode((App_Height, App_Width))
@@ -44,19 +46,50 @@ def draw_path(path):
         pg.draw.rect(screen, Red, (box[0]*blockSize, box[1]*blockSize, blockSize-1, blockSize-1))
 
 
+def submit():
+    global start
+    global goal
+    st = start_box.get().split(',')
+    go = end_box.get().split(',')
+    start = (int(st[0]), int(st[1]))
+    goal = (int(go[0]), int(go[1]))
+    window.quit()
+    window.destroy()
+
+
+#Create user window using tkinter
+window = tk.Tk()
+label1 = tk.Label(window, text="Start: (x,y)")
+start_box = tk.Entry(window)
+label2 = tk.Label(window, text="Goal: (x,y)")
+end_box = tk.Entry(window)
+var = tk.IntVar()
+submit = tk.Button(window, text='Submit', command=submit)
+
+submit.grid(columnspan=2, row=3)
+label2.grid(row=1, pady=3)
+end_box.grid(row=1, column=1, pady=3)
+start_box.grid(row=0, column=1, pady=3)
+label1.grid(row=0, pady=3)
+
+window.update()
+tk.mainloop()
+
+
 def main():
     #Initialize maze
     maze = [0 for i in range(50)]
     for i in range(50):
         maze[i] = [0 for j in range(50)]
 
-    path = Astar_path(maze, (0, 0), (37, 44))
+    path = Astar_path(maze, start, goal)
     draw_path(path)
 
 
 #Loop runs application window
 running = True
 while running:
+
     drawGrid()
     main()
     for event in pg.event.get():
