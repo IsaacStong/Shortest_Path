@@ -15,6 +15,12 @@ Red = (150, 50, 50)
 blockSize = 14
 start = ()
 goal = ()
+obs = []
+
+# Initialize maze
+maze = [0 for i in range(50)]
+for i in range(50):
+    maze[i] = [0 for j in range(50)]
 
 #create screen view
 screen = pg.display.set_mode((App_Height, App_Width))
@@ -76,24 +82,47 @@ window.update()
 tk.mainloop()
 
 
-def main():
-    #Initialize maze
-    maze = [0 for i in range(50)]
-    for i in range(50):
-        maze[i] = [0 for j in range(50)]
+def checkMouse(x):
+    global obs
+    w = x[0]
+    h = x[1]
+    h1 = w // (App_Width // 50)
+    h2 = h // (App_Height // 50)
+    obs.append((h1, h2))
+    pg.draw.rect(screen, Black, (h1*blockSize, h2*blockSize, blockSize-1, blockSize-1))
 
+running1 = True
+while running1:
+    drawGrid()
+    draw_Start_and_Goal(start, goal)
+    for event in pg.event.get():
+        if event.type == pg.QUIT:
+            running1 = False
+        if pg.mouse.get_pressed()[0]:
+            pos = pg.mouse.get_pos()
+            checkMouse(pos)
+        elif event.type == pg.KEYDOWN:
+            if event.key == pg.K_SPACE:
+                running1 = False
+                break
+    pg.display.update()
+
+
+def main():
+    for i in range(len(obs)):
+        maze[obs[i][0]][obs[i][1]] = 1
     path = Astar_path(maze, start, goal)
     draw_path(path)
 
 
+main()
 #Loop runs application window
-running = True
-while running:
-
+running2 = True
+while running2:
     drawGrid()
-    main()
+    pg.draw.rect(screen, Black, (obs[i][0] * blockSize, obs[i][1] * blockSize, blockSize - 1, blockSize - 1))
     for event in pg.event.get():
         if event.type == pg.QUIT:
-            running = False
+            running2 = False
 
     pg.display.update()

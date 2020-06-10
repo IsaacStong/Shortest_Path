@@ -3,13 +3,24 @@
 from Node import Node
 
 
+def check_children(child, open_list, closed_list):
+    # Check if child is in closed
+    for closed_child in closed_list:
+        if child == closed_child:
+            return False
+    # Check if child is in open
+    for open_node in open_list:
+        if child == open_node and child.g_value > open_node.g_value:
+            return False
+    return True
+
+
 def Astar_path(maze, start, end):
     #Node and List Initialization
     start_Node = Node(None, start)
     end_Node = Node(None, end)
     open_List = []
     closed_List = []
-
     #Add starting node to open
     open_List.append(start_Node)
 
@@ -35,31 +46,8 @@ def Astar_path(maze, start, end):
                 path.append(current.position)
                 current = current.parent
             return path[::-1]
-
         #Generate Children
         children = current_Node.find_children(maze, end_Node)
         for child in children:
-            #Check if child is in closed
-            for closed_child in closed_List:
-                if child == closed_child:
-                    continue
-            #Check if child is in open
-            for open_node in open_List:
-                if child == open_node and child.g_value > open_node.g_value:
-                    continue
-
-            open_List.append(child)
-
-
-sample_maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-answer = Astar_path(sample_maze, (0,0), (7,6))
-print(answer)
+            if check_children(child, open_List, closed_List):
+                open_List.append(child)
